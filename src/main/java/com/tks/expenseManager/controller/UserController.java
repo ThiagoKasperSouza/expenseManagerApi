@@ -25,18 +25,21 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping 
-    public List<User> findAll() {
-        return userService.findAll();
+    public List<UserResponse> findAll() {
+        return userService.findAll().stream().map(e -> new UserResponse(e.getId(), e.getName(), e.getEmail())).toList();
     }
 
     @GetMapping ("/{id}")
-    public User findById(@PathVariable Long id) {
-        return userService.findById(id);
+    public UserResponse findById(@PathVariable Long id) {
+        User user = userService.findById(id);
+
+        return new UserResponse(user.getId(), user.getName(), user.getEmail());
     }
 
     @PutMapping ("/{id}")
-    public User update(@PathVariable Long id, @RequestBody User updatedUser) {
-        return userService.update(id, updatedUser);
+    public UserResponse update(@PathVariable Long id, @RequestBody User updatedUser) {
+        User user = userService.update(id, updatedUser);
+        return new UserResponse(user.getId(), user.getName(), user.getEmail());
     }
 
     @DeleteMapping ("/{id}")
