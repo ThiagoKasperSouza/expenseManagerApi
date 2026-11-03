@@ -264,6 +264,36 @@
       "name": "Expenses",
       "item": [
         {
+          "name": "Create Expense",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-XSRF-TOKEN",
+                "value": "{{csrfToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"{{expenseDescription}}\",\n  \"value\": {{expenseValue}},\n  \"type\": \"{{expenseType}}\",\n  \"paymentMethod\": \"{{expensePaymentMethod}}\",\n  \"dueDate\": \"2025-12-01\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/expenses"
+          }
+        },
+        {
           "name": "List Expenses",
           "request": {
             "method": "GET",
