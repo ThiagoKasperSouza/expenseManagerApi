@@ -16,6 +16,12 @@ import java.time.LocalDateTime;
 public class ExpenseService {
     private final ExpenseRepository expenseRepository;
 
+    public Expense create(Expense expense) {
+        expense.setCreatedAt(LocalDateTime.now());
+        expense.setUpdatedAt(LocalDateTime.now());
+        return expenseRepository.save(expense);
+    }
+
     public List<Expense> findAll() {
         return expenseRepository.findAll();
     }

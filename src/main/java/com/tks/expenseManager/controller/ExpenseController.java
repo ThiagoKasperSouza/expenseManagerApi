@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -22,6 +23,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExpenseController {
     private final ExpenseService expenseService;
+
+    @PostMapping 
+    public ExpenseResponse create(@RequestBody Expense expense) {
+        var createdExpense = expenseService.create(expense);
+        return new ExpenseResponse(
+                createdExpense.getId(),
+                createdExpense.getDescription(),
+                createdExpense.getValue(),
+                createdExpense.getDueDate(),
+                createdExpense.getPaymentMethod().name(),
+                createdExpense.getType().name()
+        );
+    }
 
     @GetMapping
     public List<ExpenseResponse> findAll() {
