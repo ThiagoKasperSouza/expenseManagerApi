@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.tks.expenseManager.repository.entities.User;
 import com.tks.expenseManager.service.UserService;
 import com.tks.expenseManager.dtos.UserResponse;
+import com.tks.expenseManager.dtos.UserRequest;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +38,8 @@ public class UserController {
     }
 
     @PutMapping ("/{id}")
-    public UserResponse update(@PathVariable Long id, @RequestBody User updatedUser) {
-        User user = userService.update(id, updatedUser);
+    public UserResponse update(@PathVariable Long id, @RequestBody UserRequest updatedUser) {
+        User user = userService.update(id, updatedUser.toUser());
         return new UserResponse(user.getId(), user.getName(), user.getEmail());
     }
 

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.tks.expenseManager.service.ExpenseService;
 import com.tks.expenseManager.dtos.ExpenseResponse;
+import com.tks.expenseManager.dtos.ExpenseRequest;
 import com.tks.expenseManager.repository.entities.Expense;
 
 import java.util.List;
@@ -65,8 +66,8 @@ public class ExpenseController {
     }
 
     @PutMapping ("/{id}")
-    public ExpenseResponse update(@PathVariable Long id, @RequestBody Expense updatedExpense) {
-        var expense = expenseService.update(id, updatedExpense);
+    public ExpenseResponse update(@PathVariable Long id, @RequestBody ExpenseRequest updatedExpense) {
+        var expense = expenseService.update(id, updatedExpense.toExpense());
         return new ExpenseResponse(
                 expense.getId(),
                 expense.getDescription(),
