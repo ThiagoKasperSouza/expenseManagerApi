@@ -35,8 +35,11 @@ services:
     ports:
       - "${SERVER_PORT:-8080}:8080"
     networks:
+      - default
       - n8n_default
+
 networks:
+  default: {}
   n8n_default:
     external: true
 volumes:
