@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.RequiredArgsConstructor;
 
 import com.tks.expenseManager.service.ExpenseService;
 import com.tks.expenseManager.dtos.ExpenseResponse;
 import com.tks.expenseManager.dtos.ExpenseRequest;
-import com.tks.expenseManager.repository.entities.Expense;
 
 import java.util.List;
 
@@ -26,8 +27,10 @@ public class ExpenseController {
     private final ExpenseService expenseService;
 
     @PostMapping 
-    public ExpenseResponse create(@RequestBody Expense expense) {
-        var createdExpense = expenseService.create(expense);
+    public ExpenseResponse create(
+            @RequestBody ExpenseRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        var createdExpense = expenseService.create(request.toExpense(), userDetails.getUsername());
         return new ExpenseResponse(
                 createdExpense.getId(),
                 createdExpense.getDescription(),
@@ -39,8 +42,8 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public List<ExpenseResponse> findAll() {
-        return expenseService.findAll().stream()
+    public List<ExpenseResponse> findAll(@AuthenticationPrincipal UserDetails userDetails) {
+        return expenseService.findAll(userDetails.getUsername()).stream()
                 .map(e -> new ExpenseResponse(
                         e.getId(),
                         e.getDescription(),
@@ -53,8 +56,10 @@ public class ExpenseController {
     }
 
     @GetMapping ("/{id}")
-    public ExpenseResponse findById(@PathVariable Long id) {
-        var expense = expenseService.findById(id);
+    public ExpenseResponse findById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        var expense = expenseService.findById(id, userDetails.getUsername());
         return new ExpenseResponse(
                 expense.getId(),
                 expense.getDescription(),
@@ -66,8 +71,11 @@ public class ExpenseController {
     }
 
     @PutMapping ("/{id}")
-    public ExpenseResponse update(@PathVariable Long id, @RequestBody ExpenseRequest updatedExpense) {
-        var expense = expenseService.update(id, updatedExpense.toExpense());
+    public ExpenseResponse update(
+            @PathVariable Long id,
+            @RequestBody ExpenseRequest updatedExpense,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        var expense = expenseService.update(id, updatedExpense.toExpense(), userDetails.getUsername());
         return new ExpenseResponse(
                 expense.getId(),
                 expense.getDescription(),
@@ -79,8 +87,10 @@ public class ExpenseController {
     }
 
     @DeleteMapping ("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        expenseService.delete(id);
+    public ResponseEntity<Void> delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        expenseService.delete(id, userDetails.getUsername());
         return ResponseEntity.noContent().build();
     }
 

@@ -2,20 +2,25 @@ package com.tks.expenseManager.dtos;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.tks.expenseManager.repository.entities.Expense;
 import com.tks.expenseManager.repository.entities.ExpenseType;
 import com.tks.expenseManager.repository.entities.PaymentMethod;
 
-public record ExpenseRequest(Long id, String description, BigDecimal value, LocalDate date, String paymentMethod, String expenseType) {
+public record ExpenseRequest(
+        String description,
+        BigDecimal value,
+        @JsonAlias("date") LocalDate dueDate,
+        PaymentMethod paymentMethod,
+        @JsonAlias("expenseType") ExpenseType type) {
+
     public Expense toExpense() {
         var expense = new Expense();
-        expense.setId(this.id());
         expense.setDescription(this.description());
         expense.setValue(this.value());
-        expense.setDueDate(this.date());
-        expense.setPaymentMethod(PaymentMethod.valueOf(this.paymentMethod()));
-        expense.setType(ExpenseType.valueOf(this.expenseType()));
+        expense.setDueDate(this.dueDate());
+        expense.setPaymentMethod(this.paymentMethod());
+        expense.setType(this.type());
         return expense;
     }
 }
-
